@@ -1,0 +1,47 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "海天水务",
+        "description": "填入微信小程序里拿到的 access_token。\n\n获取方式：微信打开「乐至海天水务」公众号 → 营业大厅 → 微网厅 → 授权登录，然后从抓包记录或本地存储里复制 access_token。\n\n拿到令牌后本集成会自动滚动续期，无需反复填写。",
+        "data": {
+          "token": "Access Token",
+          "tenant": "水司代码（默认 cdlz）"
+        }
+      },
+      "pick": {
+        "title": "选择户号",
+        "description": "该微信账号下绑定了多个水表，请选择要接入的一个。",
+        "data": {
+          "cust_id": "户号"
+        }
+      },
+      "reauth_confirm": {
+        "title": "重新授权",
+        "description": "令牌已失效，请重新填入 access_token。",
+        "data": {
+          "token": "Access Token"
+        }
+      }
+    },
+    "error": {
+      "auth_failed": "令牌无效或已过期，请重新获取",
+      "cannot_connect": "连接海天服务器失败，请稍后重试",
+      "no_cust": "该账号下没有查询到已绑定的水表"
+    },
+    "abort": {
+      "already_configured": "该户号已添加",
+      "reauth_successful": "重新授权成功"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "选项",
+        "data": {
+          "scan_interval": "刷新间隔（小时）"
+        }
+      }
+    }
+  }
+}
