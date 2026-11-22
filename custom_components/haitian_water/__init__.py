@@ -29,6 +29,11 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR]
 
 
+def _token_mark(entry: ConfigEntry) -> str:
+    """记录令牌滚动写入的标记键。"""
+    return f"token_roll_{entry.entry_id}"
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_get_clientsession(hass)
     api = HaitianApi(
@@ -55,6 +60,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.warning("令牌续期失败，下次取数将触发重新授权")
             return
         if api.token != entry.data.get(CONF_TOKEN):
+            # 标记这次写入来自令牌滚动，更新监听器据此跳过重载
+            hass.data.setdefault(DOMAIN, {})[_token_mark(entry)] = api.token
             hass.config_entries.async_update_entry(
                 entry, data={**entry.data, CONF_TOKEN: api.token}
             )
@@ -79,4 +86,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """配置变更时重载集成；仅令牌滚动不重载，避免实体反复变为不可用。"""
+    marker = hass.data.get(DOMAIN, {}).pop(_token_mark(entry), None)
+    if marker is not None and marker == entry.data.get(CONF_TOKEN):
+        return
     await hass.config_entries.async_reload(entry.entry_id)
