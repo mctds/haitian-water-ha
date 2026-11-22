@@ -97,7 +97,7 @@ async def async_setup_entry(
 class HaitianSensor(CoordinatorEntity[HaitianCoordinator], SensorEntity):
     """单个指标实体。"""
 
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
     _attr_attribution = "数据来源：海天水务微信小程序"
 
     def __init__(
@@ -106,7 +106,7 @@ class HaitianSensor(CoordinatorEntity[HaitianCoordinator], SensorEntity):
         super().__init__(coordinator)
         self.entity_description = description
         cust = coordinator.entry.data.get("cust_code") or coordinator.cust_id
-        self._attr_name = f"{NAME} {description.name}"
+        self._attr_name = description.name
         self._attr_unique_id = f"{DOMAIN}_{coordinator.cust_id}_{description.key}"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, str(coordinator.cust_id))},

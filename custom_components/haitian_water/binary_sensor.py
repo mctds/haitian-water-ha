@@ -29,10 +29,11 @@ class HaitianArrearsSensor(CoordinatorEntity[HaitianCoordinator], BinarySensorEn
 
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
     _attr_icon = "mdi:alert-circle-outline"
+    _attr_has_entity_name = True
 
     def __init__(self, coordinator: HaitianCoordinator) -> None:
         super().__init__(coordinator)
-        self._attr_name = f"{NAME} 欠费"
+        self._attr_name = "欠费"
         self._attr_unique_id = f"{DOMAIN}_{coordinator.cust_id}_arrears"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, str(coordinator.cust_id))},
